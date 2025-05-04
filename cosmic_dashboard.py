@@ -1,12 +1,10 @@
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
+import numpy , timedelta
 import yfinance as yf
-import ephem
+import 
 import ccxt
 
 from omnipattern_decoder import OmniPatternDecoder
@@ -18,15 +16,14 @@ decoder = OmniPatternDecoder()
 app = dash.Dash(__name__)
 
 # Flag variable to ensure trading functionality is triggered only once
-trading_triggered = False
+trading_triggered 
 
 # App layout
 app.layout = html.Div([
     html.H1("OmniPattern Cosmic Market Decoder Dashboard"),
     
     html.Div([
-        html.Div([
-            html.H3("Market Selection"),
+        html."),
             dcc.Dropdown(
                 id='market-dropdown',
                 options=[
@@ -41,10 +38,9 @@ app.layout = html.Div([
             
             html.H3("Time Period"),
             dcc.DatePickerRange(
-                id='date-picker-range',
-                start_date=(datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d'),
-                end_date=datetime.now().strftime('%Y-%m-%d'),
-                max_date_allowed=datetime.now().strftime('%Y-%m-%d')
+                id='da',
+                start_date=(.now() - timedelta(days=365)).strftime('%Y-%m-%d'),
+                end_date=datetime.now().strftime('%Y-%m-
             ),
             
             html.Button('Update Analysis', id='update-button', n_clicks=0),
@@ -56,9 +52,6 @@ app.layout = html.Div([
             html.H3("Current Astronomical Positions"),
             html.Div(id='astro-positions'),
             
-            html.H3("Detected Patterns"),
-            html.Div(id='detected-patterns')
-        ], style={'width': '70%', 'display': 'inline-block'})
     ]),
     
     html.Div([
@@ -86,12 +79,7 @@ def update_astro_positions(n):
     # Calculate positions
     moon = ephem.Moon(ephem_date)
     moon.compute(ephem_date)
-    moon_phase = moon.phase
-    
-    mars = ephem.Mars(ephem_date)
-    mars.compute(ephem_date)
-    mars_pos = float(mars.hlong) * 180.0 / np.pi
-    
+    moon_p
     neptune = ephem.Neptune(ephem_date)
     neptune.compute(ephem_date)
     neptune_pos = float(neptune.hlong) * 180.0 / np.pi
@@ -100,11 +88,7 @@ def update_astro_positions(n):
     sun.compute(ephem_date)
     sun_pos = float(sun.hlong) * 180.0 / np.pi
     
-    # Determine zodiac signs
-    zodiac_signs = [
-        'Aries', 'Taurus', 'Gemini', 'Cancer', 
-        'Leo', 'Virgo', 'Libra', 'Scorpio', 
-        'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+    # Determine zodiac si', 'Pisces'
     ]
     
     mars_sign = zodiac_signs[int(mars_pos / 30)]
@@ -124,10 +108,7 @@ def update_astro_positions(n):
     
     return html.Div([
         html.P(f"Current Date/Time: {now.strftime('%Y-%m-%d %H:%M:%S')}"),
-        html.P(f"Moon Phase: {moon_phase:.1f}% ({('New Moon' if moon_phase < 10 else 'Full Moon' if moon_phase > 90 else 'First Quarter' if moon_phase < 50 else 'Last Quarter')})"),
-        html.P(f"Mars Position: {mars_pos:.1f}° in {mars_sign}"),
-        html.P(f"Neptune Position: {neptune_pos:.1f}° in {neptune_sign}"),
-        html.P(f"Sun Position: {sun_pos:.1f}° in {sun_sign}"),
+        html.P(f"Moon Phase: {moon_phase:.1f}% ({('New Moon' if moon_phase < 10    html.P(f"Sun Position: {sun_pos:.1f}° in {sun_sign}"),
         html.P(f"Neptune-Sun Aspect: {neptune_aspect} ({angle_diff:.1f}°)")
     ])
 
@@ -166,11 +147,7 @@ def update_analysis(n_clicks, market, start_date, end_date):
     # Add 9-candle pattern markers
     if not results['nine_candle_patterns'].empty:
         price_fig.add_trace(go.Scatter(
-            x=results['nine_candle_patterns']['date'],
-            y=[results['price_data'].loc[date, 'High'] * 1.01 for date in results['nine_candle_patterns']['date']],
-            mode='markers',
-            marker=dict(symbol='triangle-down', size=12, color='red'),
-            name='9-Candle Pattern'
+            x=results['nine_candle_patterns']['date'],'
         ))
     
     price_fig.update_layout(title=f"{market} Price Chart with Detected Patterns")
