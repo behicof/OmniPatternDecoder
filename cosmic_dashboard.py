@@ -7,6 +7,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import yfinance as yf
 import ephem
+import ccxt
 
 from omnipattern_decoder import OmniPatternDecoder
 
@@ -43,7 +44,8 @@ app.layout = html.Div([
                 max_date_allowed=datetime.now().strftime('%Y-%m-%d')
             ),
             
-            html.Button('Update Analysis', id='update-button', n_clicks=0)
+            html.Button('Update Analysis', id='update-button', n_clicks=0),
+            html.Button('Start Trading', id='trade-button', n_clicks=0)
         ], style={'width': '30%', 'display': 'inline-block', 'vertical-align': 'top'}),
         
         html.Div([
@@ -63,7 +65,7 @@ app.layout = html.Div([
     
     dcc.Interval(
         id='interval-component',
-        interval=60*60*1000,  # update every hour
+        interval=1,  # update every millisecond
         n_intervals=0
     )
 ])
@@ -210,6 +212,25 @@ def update_analysis(n_clicks, market, start_date, end_date):
     patterns_html = html.Div([html.P(text) for text in patterns_text]) if patterns_text else "No significant patterns detected"
     
     return price_fig, pattern_fig, cycle_fig, patterns_html
+
+# Callback to handle trading functionality
+@app.callback(
+    Output('trade-button', 'n_clicks'),
+    [Input('trade-button', 'n_clicks')]
+)
+def start_trading(n_clicks):
+    if n_clicks > 0:
+        # Example trading logic
+        exchange = ccxt.binance({
+            'apiKey': 'YOUR_API_KEY',
+            'secret': 'YOUR_SECRET_KEY',
+        })
+        
+        symbol = 'BTC/USDT'
+        order = exchange.create_market_buy_order(symbol, 0.001)
+        print(f"Order executed: {order}")
+    
+    return 0
 
 if __name__ == '__main__':
     app.run_server(debug=True)
