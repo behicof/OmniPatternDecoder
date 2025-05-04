@@ -1,9 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {},
-  "tasks": {
-    "test": "pip install pytest && pytest",
-    "build": "pip install -r requirements.txt && pip install pyswisseph",
+  "image": "mcr..com/devcontainers/universal:requirements.txt && pip install pyswisseph",
     "launch": "python cosmic_dashboard.py"
   }
 }
