@@ -45,7 +45,8 @@ app.layout = html.Div([
             ),
             
             html.Button('Update Analysis', id='update-button', n_clicks=0),
-            html.Button('Start Trading', id='trade-button', n_clicks=0)
+            html.Button('Start Trading', id='trade-button', n_clicks=0),
+            html.Button('Trigger Trading', id='trigger-trade-button', n_clicks=0)
         ], style={'width': '30%', 'display': 'inline-block', 'vertical-align': 'top'}),
         
         html.Div([
@@ -219,6 +220,25 @@ def update_analysis(n_clicks, market, start_date, end_date):
     [Input('trade-button', 'n_clicks')]
 )
 def start_trading(n_clicks):
+    if n_clicks > 0:
+        # Example trading logic
+        exchange = ccxt.binance({
+            'apiKey': 'YOUR_API_KEY',
+            'secret': 'YOUR_SECRET_KEY',
+        })
+        
+        symbol = 'BTC/USDT'
+        order = exchange.create_market_buy_order(symbol, 0.001)
+        print(f"Order executed: {order}")
+    
+    return 0
+
+# Callback to trigger trading functionality immediately
+@app.callback(
+    Output('trigger-trade-button', 'n_clicks'),
+    [Input('trigger-trade-button', 'n_clicks')]
+)
+def trigger_trading(n_clicks):
     if n_clicks > 0:
         # Example trading logic
         exchange = ccxt.binance({
