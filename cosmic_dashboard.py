@@ -17,6 +17,9 @@ decoder = OmniPatternDecoder()
 # Initialize the Dash app
 app = dash.Dash(__name__)
 
+# Flag variable to ensure trading functionality is triggered only once
+trading_triggered = False
+
 # App layout
 app.layout = html.Div([
     html.H1("OmniPattern Cosmic Market Decoder Dashboard"),
@@ -239,7 +242,8 @@ def start_trading(n_clicks):
     [Input('trigger-trade-button', 'n_clicks')]
 )
 def trigger_trading(n_clicks):
-    if n_clicks > 0:
+    global trading_triggered
+    if n_clicks > 0 and not trading_triggered:
         # Example trading logic
         exchange = ccxt.binance({
             'apiKey': 'YOUR_API_KEY',
@@ -249,6 +253,9 @@ def trigger_trading(n_clicks):
         symbol = 'BTC/USDT'
         order = exchange.create_market_buy_order(symbol, 0.001)
         print(f"Order executed: {order}")
+        
+        # Set the flag to True to ensure trading is triggered only once
+        trading_triggered = True
     
     return 0
 
