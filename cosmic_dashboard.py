@@ -273,3 +273,26 @@ decoder = OmniPatternDecoder()
 # Initialize the Dash app
 app = dash.Dash(__name__)
 
+            html.Div(id='astro-positions'),
+            
+            html.H3("Detected Patterns"),
+            html.Div(id='detected-patterns')
+        ], style={'width': '70%', 'display': 'inline-block'})
+    ]),
+    
+    html.Div([
+        dcc.Graph(id='price-chart'),
+        dcc.Graph(id='pattern-chart'),
+        dcc.Graph(id='cycle-chart')
+    ]),
+    
+    dcc.Interval(
+        id='interval-component',
+        interval=1,  # update every millisecond
+        n_intervals=0
+    )
+])
+
+# Callback to update current astronomical positions
+@app.callback(
+    Output('astro-positions', 'children'),
