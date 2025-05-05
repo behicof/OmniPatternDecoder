@@ -254,3 +254,22 @@ def trigger_trading_now(n_clicks):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+import dash
+from dash import dcc, html
+from dash.dependencies import Input, Output
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import yfinance as yf
+import ephem
+import ccxt
+
+from omnipattern_decoder import OmniPatternDecoder
+
+# Initialize OmniPatternDecoder
+decoder = OmniPatternDecoder()
+
+# Initialize the Dash app
+app = dash.Dash(__name__)
+
