@@ -45,8 +45,7 @@ app.layout = html.Div([
             ),
             
             html.Button('Update Analysis', id='update-button', n_clicks=0),
-            html.Button('Start Trading', id='trade-button', n_clicks=0),
-            html.Button('Trigger Trading Now', id='trigger-trade-button', n_clicks=0)
+            html.Button('Trigger Trade Now', id='trigger-trade-button', n_clicks=0)
         ], style={'width': '30%', 'display': 'inline-block', 'vertical-align': 'top'}),
         
         html.Div([
@@ -214,85 +213,36 @@ def update_analysis(n_clicks, market, start_date, end_date):
     
     return price_fig, pattern_fig, cycle_fig, patterns_html
 
-# Callback to handle trading functionality
-@app.callback(
-    Output('trade-button', 'n_clicks'),
-    [Input('trade-button', 'n_clicks')]
-)
-def start_trading(n_clicks):
-    if n_clicks > 0:
-        # Example trading logic
-        exchange = ccxt.binance({
-            'apiKey': 'YOUR_API_KEY',
-            'secret': 'YOUR_SECRET_KEY',
-        })
-        
-        symbol = 'BTC/USDT'
-        order = exchange.create_market_buy_order(symbol, 0.001)
-        print(f"Order executed: {order}")
-    
-    return 0
-
-# Callback to handle immediate trading functionality
+# Callback to trigger trading functionality
 @app.callback(
     Output('trigger-trade-button', 'n_clicks'),
     [Input('trigger-trade-button', 'n_clicks')]
 )
 def trigger_trading_now(n_clicks):
     if n_clicks > 0:
-        # Example trading logic
+        # Replace with your actual API keys
+        api_key = 'YOUR_API_KEY'
+        secret_key = 'YOUR_SECRET_KEY'
+        
+        # Initialize Binance exchange
         exchange = ccxt.binance({
-            'apiKey': 'YOUR_API_KEY',
-            'secret': 'YOUR_SECRET_KEY',
+            'apiKey': api_key,
+            'secret': secret_key,
         })
         
+        # Example trading logic: Buy 0.001 BTC/USDT
         symbol = 'BTC/USDT'
-        order = exchange.create_market_buy_order(symbol, 0.001)
-        print(f"Immediate order executed: {order}")
+        order_type = 'market'
+        side = 'buy'
+        amount = 0.001
+        
+        try:
+            order = exchange.create_order(symbol, order_type, side, amount)
+            print(f"Order executed: {order}")
+        except Exception as e:
+            print(f"Error executing order: {e}")
     
     return 0
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
-import plotly.graph_objs as go
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-import yfinance as yf
-import ephem
-import ccxt
-
-from omnipattern_decoder import OmniPatternDecoder
-
-# Initialize OmniPatternDecoder
-decoder = OmniPatternDecoder()
-
-# Initialize the Dash app
-app = dash.Dash(__name__)
-
-            html.Div(id='astro-positions'),
-            
-            html.H3("Detected Patterns"),
-            html.Div(id='detected-patterns')
-        ], style={'width': '70%', 'display': 'inline-block'})
-    ]),
-    
-    html.Div([
-        dcc.Graph(id='price-chart'),
-        dcc.Graph(id='pattern-chart'),
-        dcc.Graph(id='cycle-chart')
-    ]),
-    
-    dcc.Interval(
-        id='interval-component',
-        interval=1,  # update every millisecond
-        n_intervals=0
-    )
-])
-
-# Callback to update current astronomical positions
-@app.callback(
-    Output('astro-positions', 'children'),
