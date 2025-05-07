@@ -7,6 +7,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import yfinance as yf
 import ephem
+import ccxt
 
 from omnipattern_decoder import OmniPatternDecoder
 
@@ -43,7 +44,8 @@ app.layout = html.Div([
                 max_date_allowed=datetime.now().strftime('%Y-%m-%d')
             ),
             
-            html.Button('Update Analysis', id='update-button', n_clicks=0)
+            html.Button('Update Analysis', id='update-button', n_clicks=0),
+            html.Button('Trigger Trade Now', id='trigger-trade-button', n_clicks=0)
         ], style={'width': '30%', 'display': 'inline-block', 'vertical-align': 'top'}),
         
         html.Div([
@@ -63,7 +65,7 @@ app.layout = html.Div([
     
     dcc.Interval(
         id='interval-component',
-        interval=60*60*1000,  # update every hour
+        interval=1,  # update every millisecond
         n_intervals=0
     )
 ])
@@ -210,6 +212,37 @@ def update_analysis(n_clicks, market, start_date, end_date):
     patterns_html = html.Div([html.P(text) for text in patterns_text]) if patterns_text else "No significant patterns detected"
     
     return price_fig, pattern_fig, cycle_fig, patterns_html
+
+# Callback to trigger trading functionality
+@app.callback(
+    Output('trigger-trade-button', 'n_clicks'),
+    [Input('trigger-trade-button', 'n_clicks')]
+)
+def trigger_trading_now(n_clicks):
+    if n_clicks > 0:
+        # Replace with your actual API keys
+        api_key = 'YOUR_API_KEY'
+        secret_key = 'YOUR_SECRET_KEY'
+        
+        # Initialize Binance exchange
+        exchange = ccxt.binance({
+            'apiKey': api_key,
+            'secret': secret_key,
+        })
+        
+        # Example trading logic: Buy 0.001 BTC/USDT
+        symbol = 'BTC/USDT'
+        order_type = 'market'
+        side = 'buy'
+        amount = 0.001
+        
+        try:
+            order = exchange.create_order(symbol, order_type, side, amount)
+            print(f"Order executed: {order}")
+        except Exception as e:
+            print(f"Error executing order: {e}")
+    
+    return 0
 
 if __name__ == '__main__':
     app.run_server(debug=True)
